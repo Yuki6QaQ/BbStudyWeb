@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>刷题小站 ✨</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="site-header">
+            <div class="brand"><span class="logo">🌸</span>
+                <h1>刷题小站</h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-ghost" id="themeBtn">🌙</button>
+                <button class="btn btn-ghost" id="settingBtn">设置</button>
+            </div>
+        </header>
+
+        <!--首页-->
+        <div class="card page" id="homePage">
+            <p class="greet">今天也要加油，你超棒的 💗</p>
+            <div class="menu-grid">
+                <button class="menu-card pink" id="randBtn">
+                    <span class="menu-icon">🎀</span>
+                    <span class="menu-title">随机刷题</span>
+                    <span class="menu-sub">随机抽取题目练习</span>
+                </button>
+                <button class="menu-card purple" id="orderBtn">
+                    <span class="menu-icon">📖</span>
+                    <span class="menu-title">顺序答题</span>
+                    <span class="menu-sub">按题号顺序练习全部题目</span>
+                </button>
+                <button class="menu-card peach" id="wrongBookBtn">
+                    <span class="menu-icon">📔</span>
+                    <span class="menu-title">错题本</span>
+                    <span class="menu-sub">巩固做错的题目</span>
+                </button>
+                <button class="menu-card green" id="statBtn">
+                    <span class="menu-icon">📊</span>
+                    <span class="menu-title">做题统计</span>
+                    <span class="menu-sub">全局+单题记录</span>
+                </button>
+            </div>
+            <p class="encourage">慢慢来，坚持就会有收获 🌷</p>
+        </div>
+
+        <!--刷题页-->
+        <div class="card page hidden" id="quizPage">
+            <div class="quiz-top">
+                <span class="badge" id="modeBadge">随机刷题</span>
+                <span class="q-index">第 <strong id="qCurId">0</strong> 题 / <strong id="qTotal">0</strong></span>
+            </div>
+            <div class="q-hint-stat" id="qHintStat">
+                本题历史：✅答对 <span id="qOk">0</span> 次 &nbsp;&nbsp; ❌答错 <span id="qErr">0</span> 次
+            </div>
+            <h2 class="q-title" id="qTitle"></h2>
+            <div class="opt-list" id="optList"></div>
+            <div class="feedback" id="feedbackBox"></div>
+            <div class="tip-card hidden" id="tipBox">
+                <span class="tip-label">💡解析提示</span>
+                <p id="tipText"></p>
+            </div>
+            <div class="action-row">
+                <button class="btn btn-ghost" id="prevBtn" disabled>上一题</button>
+                <button class="btn btn-pink" id="nextBtn">下一题</button>
+                <button class="btn btn-ghost" id="quizBackHome">返回首页</button>
+            </div>
+        </div>
+
+        <!--错题本列表页-->
+        <div class="card page hidden" id="wrongListPage">
+            <div class="list-header">
+                <h3>📔错题本</h3>
+                <div>
+                    <button class="btn btn-pink" id="startWrongQuiz">随机刷错题</button>
+                    <button class="btn btn-ghost" id="wrongListBack">返回首页</button>
+                </div>
+            </div>
+            <p class="page-desc">只展示有做错记录的题目</p>
+            <div id="wrongListWrap"></div>
+        </div>
+
+        <!--统计页面 返回首页挪顶部-->
+        <div class="card page hidden" id="statPage">
+            <div class="list-header">
+                <h3>📊做题统计</h3>
+                <button class="btn btn-ghost" id="statBackHome">返回首页</button>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-item-box">总作答<span id="stTotal">0</span></div>
+                <div class="stat-item-box ok">答对<span id="stOk">0</span></div>
+                <div class="stat-item-box err">答错<span id="stErr">0</span></div>
+                <div class="stat-item-box">正确率<span id="stRate">0%</span></div>
+            </div>
+            <h4>单题详情列表(点击条目查看完整题目信息)</h4>
+            <div id="singleStatWrap"></div>
+        </div>
+
+        <!--设置页面：支持文件选择导入 + 粘贴备用-->
+        <div class="card page hidden" id="settingPage">
+            <h3>⚙设置</h3>
+            <div class="setting-group">
+                <button class="btn" id="exportRec">导出做题记录</button>
+                <label class="btn" style="cursor:pointer;">
+                    选择备份文件导入
+                    <input type="file" id="fileImportInput" accept=".json" style="display:none;">
+                </label>
+                <button class="btn" id="importRecBtn">手动粘贴JSON(备用)</button>
+            </div>
+            <textarea id="importTextarea" class="hidden" placeholder="粘贴导出的json"></textarea>
+            <button class="btn hidden" id="confirmImport">确认粘贴导入</button>
+            <div class="danger-group">
+                <button class="btn btn-danger" id="resetAll">清空全部做题记录</button>
+            </div>
+            <div class="action-row">
+                <button class="btn btn-ghost" id="settingBack">返回首页</button>
+            </div>
+        </div>
+
+        <!--单题弹窗【完整题目、选项、答案、tip】-->
+        <div class="modal-mask hidden" id="modalMask">
+            <div class="modal modal-large">
+                <h4 id="modalTitle"></h4>
+                <div class="modal-record">
+                    <p>✅答对次数：<span id="mOk">0</span></p>
+                    <p>❌答错次数：<span id="mErr">0</span></p>
+                </div>
+                <div class="modal-question">
+                    <p class="q-text" id="modalQText"></p>
+                    <div class="modal-options" id="modalOptWrap"></div>
+                    <p class="modal-ans"><b>正确答案：</b><span id="modalRightAns"></span></p>
+                    <div class="modal-tip-wrap">
+                        <p><b>💡解析tip：</b></p>
+                        <div id="modalTip"></div>
+                    </div>
+                </div>
+                <button class="btn btn-pink modal-close-btn" id="closeModal">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const $ = s => document.querySelector(s);
+        const $$ = s => document.querySelectorAll(s);
+    </script>
+    <script src="./js/config.js"></script>
+    <script src="./js/storage.js"></script>
+    <script src="./js/ui.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+
+</html>
