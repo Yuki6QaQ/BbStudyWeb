@@ -1,12 +1,15 @@
-//切换面板
+//切换面板【增加DOM容错】
 function showPage(pageId) {
     $$(".page").forEach(el => el.classList.add("hidden"));
-    $(`#${pageId}Page`).classList.remove("hidden");
-    $("#modalMask").classList.add("hidden");
+    const targetPage = $(`#${pageId}Page`);
+    if (targetPage) targetPage.classList.remove("hidden");
+
+    const mask = $("#modalMask");
+    if (mask) mask.classList.add("hidden");
 }
 
 /**
- * 渲染题目
+ * 渲染普通刷题题目（显示历史对错统计）
  * @param {Object|null} q 题目对象
  * @param {Number} totalCnt 总题数
  * @param {Function} onUserSelect 用户点击选项回调
@@ -67,7 +70,7 @@ function renderQuestion(q, totalCnt, onUserSelect) {
 }
 
 /**
- * 用户选择答案之后渲染结果
+ * 用户选择答案之后渲染结果【普通刷题】
  */
 function renderAnswerResult(selectedIdx, rightIdx, qObj) {
     const optsDom = $$(".option");
@@ -182,4 +185,94 @@ function applyTheme(themeVal) {
         document.body.classList.remove("dark");
         $("#themeBtn").innerText = "🌙";
     }
+}
+
+// ====== 【新增考试渲染函数，追加到ui.js末尾】======
+function renderExamQuestion() {
+    const q = examPool[examCursor];
+    $("#examCur").innerText = examCursor + 1;
+    $("#examTotal").innerText = examPool.length;
+    $("#examTitle").innerText = q.title;
+    $("#examOptList").innerHTML = "";
+
+    q.options.forEach((optStr, idx) => {
+        const div = document.createElement("div");
+        div.className = "option";
+        div.innerText = optStr;
+        div.onclick = () => {
+            examUserAnswers[examCursor].selIdx = idx;
+            renderAnswerCard();
+        };
+        $("#examOptList").appendChild(div);
+    })
+    $("#examPrev").disabled = examCursor <= 0;
+    $("#examNext").disabled = examCursor >= examPool.length - 1;
+}
+
+function renderAnswerCard() {
+    const box = $("#answerCardBox");
+    box.innerHTML = "";
+    examUserAnswers.forEach((item, i) => {
+        const span = document.createElement("span");
+        span.innerText = i + 1;
+        if (item.selIdx !== null) span.classList.add("done");
+        span.onclick = () => {
+            examCursor = i;
+            renderExamQuestion();
+        }
+        box.appendChild(span);
+    })
+}
+
+function renderExamRecordList() {
+    const wrap = $("#examRecordWrap");
+    wrap.innerHTML = "";
+    const list = getExamHistory();
+    if (list.length === 0) {
+        wrap.innerHTML = `<div class="empty-text">暂无模拟考试记录</div>`;
+        return;
+    }
+    list.forEach((item, idx) => {
+        const div = document.createElement("div");
+        div.className = "single-item";
+        div.innerText = `📅${item.date}｜得分：${item.score}/${item.total}｜用时：${item.useTime}｜错题${item.wrongCount}道`;
+        div.dataset.index = idx;
+        div.onclick = () => openExamReview(idx);
+        wrap.appendChild(div);
+    })
+}
+
+function renderReviewQuestion() {
+    const q = reviewExamData.questions[currentReviewIndex];
+    const detail = reviewExamData.answerDetail[currentReviewIndex];
+    $("#revCur").innerText = currentReviewIndex + 1;
+    $("#revTotal").innerText = reviewExamData.questions.length;
+    $("#revTitle").innerText = q.title;
+    $("#revOptList").innerHTML = "";
+
+    q.options.forEach((optStr, idx) => {
+        const div = document.createElement("div");
+        div.className = "option";
+        div.innerText = optStr;
+        if (idx === detail.rightIdx) div.classList.add("right");
+        if (detail.userAnsIdx !== null && idx === detail.userAnsIdx && !detail.isRight) {
+            div.classList.add("wrong");
+        }
+        $("#revOptList").appendChild(div);
+    })
+
+    if (detail.isRight) {
+        $("#revFeedback").innerText = "✅作答正确";
+    } else {
+        $("#revFeedback").innerText = "❌作答错误";
+    }
+
+    if (q.tip && q.tip.trim() !== "") {
+        $("#revTipText").innerHTML = q.tip.replaceAll("\\n", "<br>");
+        $("#revTipBox").classList.remove("hidden");
+    } else {
+        $("#revTipBox").classList.add("hidden");
+    }
+    $("#revPrev").disabled = currentReviewIndex <= 0;
+    $("#revNext").disabled = currentReviewIndex >= reviewExamData.questions.length - 1;
 }

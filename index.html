@@ -19,7 +19,6 @@
                 <button class="btn btn-ghost" id="settingBtn">设置</button>
             </div>
         </header>
-
         <!--首页-->
         <div class="card page" id="homePage">
             <p class="greet">今天也要加油，你超棒的 💗</p>
@@ -44,10 +43,19 @@
                     <span class="menu-title">做题统计</span>
                     <span class="menu-sub">全局+单题记录</span>
                 </button>
+                <button class="menu-card exam-blue" id="examStartBtn">
+                    <span class="menu-icon">📝</span>
+                    <span class="menu-title">模拟考试</span>
+                    <span class="menu-sub">限时30分钟模拟测验</span>
+                </button>
+                <button class="menu-card exam-orange" id="examRecordBtn">
+                    <span class="menu-icon">📜</span>
+                    <span class="menu-title">考试记录</span>
+                    <span class="menu-sub">回看历史考试试卷</span>
+                </button>
             </div>
             <p class="encourage">慢慢来，坚持就会有收获 🌷</p>
         </div>
-
         <!--刷题页-->
         <div class="card page hidden" id="quizPage">
             <div class="quiz-top">
@@ -70,7 +78,6 @@
                 <button class="btn btn-ghost" id="quizBackHome">返回首页</button>
             </div>
         </div>
-
         <!--错题本列表页-->
         <div class="card page hidden" id="wrongListPage">
             <div class="list-header">
@@ -83,8 +90,7 @@
             <p class="page-desc">只展示有做错记录的题目</p>
             <div id="wrongListWrap"></div>
         </div>
-
-        <!--统计页面 返回首页挪顶部-->
+        <!--统计页面 -->
         <div class="card page hidden" id="statPage">
             <div class="list-header">
                 <h3>📊做题统计</h3>
@@ -99,8 +105,7 @@
             <h4>单题详情列表(点击条目查看完整题目信息)</h4>
             <div id="singleStatWrap"></div>
         </div>
-
-        <!--设置页面：支持文件选择导入 + 粘贴备用-->
+        <!--设置页面 -->
         <div class="card page hidden" id="settingPage">
             <h3>⚙设置</h3>
             <div class="setting-group">
@@ -120,7 +125,58 @@
                 <button class="btn btn-ghost" id="settingBack">返回首页</button>
             </div>
         </div>
-
+        <!-- =========【新增：模拟考试页面】========= -->
+        <div class="card page hidden" id="examPage">
+            <div class="list-header">
+                <h3>📝模拟考试</h3>
+                <div class="exam-timer">剩余时间：<span id="examCountDown">30:00</span></div>
+            </div>
+            <div class="quiz-top">
+                <span class="q-index">第 <strong id="examCur">0</strong> 题 / <strong id="examTotal">0</strong></span>
+            </div>
+            <h2 class="q-title" id="examTitle"></h2>
+            <div class="opt-list" id="examOptList"></div>
+            <div class="answer-card-wrap">
+                <h4>答题卡（蓝色=已作答，灰色=未作答）</h4>
+                <div id="answerCardBox" class="answer-card"></div>
+            </div>
+            <div class="action-row">
+                <button class="btn btn-ghost" id="examPrev" disabled>上一题</button>
+                <button class="btn btn-pink" id="examNext">下一题</button>
+                <button class="btn btn-danger" id="examSubmitBtn">交卷</button>
+                <button class="btn btn-ghost" id="examQuitBtn">退出考试</button>
+            </div>
+        </div>
+        <!-- =========【新增：考试记录页面】========= -->
+        <div class="card page hidden" id="examRecordPage">
+            <div class="list-header">
+                <h3>📜考试历史记录</h3>
+                <button class="btn btn-ghost" id="examRecordBack">返回首页</button>
+            </div>
+            <p class="page-desc">点击条目回看整套试卷</p>
+            <div id="examRecordWrap"></div>
+        </div>
+        <!-- =========【新增：试卷回看页面】========= -->
+        <div class="card page hidden" id="examReviewPage">
+            <div class="list-header">
+                <h3>📋试卷回看</h3>
+                <button class="btn btn-ghost" id="reviewBackRecord">返回考试记录</button>
+            </div>
+            <div class="quiz-top">
+                <span class="q-index">第 <strong id="revCur">0</strong> 题 / <strong id="revTotal">0</strong></span>
+            </div>
+            <h2 class="q-title" id="revTitle"></h2>
+            <div class="opt-list" id="revOptList"></div>
+            <div class="feedback" id="revFeedback"></div>
+            <div class="tip-card hidden" id="revTipBox">
+                <span class="tip-label">💡解析提示</span>
+                <p id="revTipText"></p>
+            </div>
+            <div class="action-row">
+                <button class="btn btn-ghost" id="revPrev" disabled>上一题</button>
+                <button class="btn btn-pink" id="revNext">下一题</button>
+            </div>
+        </div>
         <!--单题弹窗【完整题目、选项、答案、tip】-->
         <div class="modal-mask hidden" id="modalMask">
             <div class="modal modal-large">
@@ -142,13 +198,13 @@
             </div>
         </div>
     </div>
-
     <script>
         const $ = s => document.querySelector(s);
         const $$ = s => document.querySelectorAll(s);
     </script>
     <script src="./js/config.js"></script>
     <script src="./js/storage.js"></script>
+    <script src="./js/question.js"></script>
     <script src="./js/ui.js"></script>
     <script src="./js/app.js"></script>
 </body>

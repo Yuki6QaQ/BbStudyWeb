@@ -427,3 +427,42 @@ textarea {
     margin: 10px 0;
     font-size: 16px;
 }
+
+/* ============【新增：模拟考试样式】============ */
+.menu-card.exam-blue {
+    background: linear-gradient(135deg, #7fb8ff, #4285F4);
+}
+
+.menu-card.exam-orange {
+    background: linear-gradient(135deg, #ffb770, #ff8822);
+}
+
+.exam-timer {
+    font-weight: bold;
+}
+
+.answer-card-wrap {
+    margin: 16px 0 8px;
+}
+
+.answer-card {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.answer-card span {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    background: var(--primarySoft);
+    cursor: pointer;
+}
+
+.answer-card span.done {
+    background: var(--primary);
+    color: white;
+}
